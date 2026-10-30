@@ -1,4 +1,3 @@
-/* Generado por npm run build. Editar frontend/src/, no este archivo. */
 (() => {
   // frontend/src/application/ports/in/browser-use-cases.mjs
   var BrowserUseCases = class {
@@ -238,48 +237,6 @@
   };
 
   // frontend/src/application/ports/out/gateways.mjs
-  var IdentityPort = class {
-    async currentUser() {
-      throw new Error("IdentityPort.currentUser");
-    }
-    async signIn(credentials) {
-      throw new Error("IdentityPort.signIn");
-    }
-    async signOut() {
-      throw new Error("IdentityPort.signOut");
-    }
-    async recover(email) {
-      throw new Error("IdentityPort.recover");
-    }
-    async changePassword(password) {
-      throw new Error("IdentityPort.changePassword");
-    }
-    async accessToken() {
-      throw new Error("IdentityPort.accessToken");
-    }
-  };
-  var ProfilePort = class {
-    async find(user) {
-      throw new Error("ProfilePort.find");
-    }
-    async updatePreference(id, field, value) {
-      throw new Error("ProfilePort.updatePreference");
-    }
-  };
-  var CommunityPort = class {
-    async readings() {
-      throw new Error("CommunityPort.readings");
-    }
-    async activity(id) {
-      throw new Error("CommunityPort.activity");
-    }
-    async createReport(id, report) {
-      throw new Error("CommunityPort.createReport");
-    }
-    async requestHelp(input) {
-      throw new Error("CommunityPort.requestHelp");
-    }
-  };
   var AdminPort = class {
     async savePmv1(input) {
       throw new Error("AdminPort.savePmv1");
@@ -340,82 +297,6 @@
     }
     numbers(count) {
       throw new Error("EntropyPort.numbers");
-    }
-  };
-
-  // frontend/src/adapters/out/supabase.mjs
-  var checked = (result) => {
-    if (result.error) throw result.error;
-    return result.data;
-  };
-  var SupabaseIdentity = class extends IdentityPort {
-    constructor(client, recoveryUrl) {
-      super();
-      this.client = client;
-      this.recoveryUrl = recoveryUrl;
-    }
-    async currentUser() {
-      const result = await this.client.auth.getUser();
-      if (result.error?.status >= 500) throw result.error;
-      const user = result.error ? null : result.data.user;
-      return user ? { id: user.id, email: user.email } : null;
-    }
-    async signIn(credentials) {
-      checked(await this.client.auth.signInWithPassword(credentials));
-    }
-    async signOut() {
-      checked(await this.client.auth.signOut({ scope: "local" }));
-    }
-    async recover(email) {
-      checked(await this.client.auth.resetPasswordForEmail(email, { redirectTo: this.recoveryUrl }));
-    }
-    async changePassword(password) {
-      checked(await this.client.auth.updateUser({ password }));
-    }
-    async accessToken() {
-      return checked(await this.client.auth.getSession()).session?.access_token;
-    }
-    subscribe(callback) {
-      return this.client.auth.onAuthStateChange((event) => {
-        if (event === "SIGNED_OUT") callback();
-      });
-    }
-  };
-  var SupabaseProfiles = class extends ProfilePort {
-    constructor(client) {
-      super();
-      this.client = client;
-    }
-    async find(user) {
-      const admin = checked(await this.client.from("administradores").select("id,display_name").eq("id", user.id).maybeSingle());
-      const person = checked(await this.client.from("clientes").select("*").eq("id", user.id).single());
-      return { ...person, email: user.email, role: admin ? "admin" : "user", name: admin?.display_name || person.full_name };
-    }
-    async updatePreference(id, field, value) {
-      checked(await this.client.from("clientes").update({ [field]: value }).eq("id", id).select("id").single());
-    }
-  };
-  var SupabaseCommunity = class extends CommunityPort {
-    constructor(client) {
-      super();
-      this.client = client;
-    }
-    async readings() {
-      return checked(await this.client.from("smoke_readings").select("*").eq("dataset_id", "smoke-detection-iot-300-v1").order("source_row").limit(300));
-    }
-    async activity(id) {
-      const [reports, incidents, settings] = (await Promise.all([
-        this.client.from("reportes").select("*").eq("user_id", id).order("created_at", { ascending: false }).limit(200),
-        this.client.from("incidentes").select("*").eq("user_id", id).order("created_at", { ascending: false }).limit(200),
-        this.client.from("app_settings").select("*").eq("id", true).single()
-      ])).map(checked);
-      return { reports, incidents, settings };
-    }
-    async createReport(id, report) {
-      checked(await this.client.from("reportes").insert({ user_id: id, location: report.location, observation: report.type, severity: report.severity, description: report.description, contact: report.contact, distance: report.distance }));
-    }
-    async requestHelp({ location: location2, visible, safe, reference }) {
-      return checked(await this.client.rpc("request_help", { location_text: location2, visible, safe, reference_known: reference }));
     }
   };
 
@@ -591,7 +472,7 @@
       const title = document.createElement("h1");
       title.textContent = "No se pudo conectar";
       const message = document.createElement("p");
-      message.textContent = "Revisa la conexi\xF3n y la configuraci\xF3n de Supabase. No se han sustituido los datos por una simulaci\xF3n.";
+      message.textContent = "Revisa la conexi\xF3n y la configuraci\xF3n de servicio remoto. No se han sustituido los datos por una simulaci\xF3n.";
       const retry = document.createElement("button");
       retry.textContent = "Reintentar";
       retry.onclick = () => location.reload();
@@ -699,7 +580,7 @@
         page: 8,
         status: "Parcial",
         evidence: [
-          "supabase/migrations/202610260001_pmv1.sql",
+          "servicio remoto/migrations/202610260001_pmv1.sql",
           "tests/pmv1.test.mjs",
           "tests/pmv1_live.mjs"
         ],
@@ -734,7 +615,7 @@
         evidence: [
           "frontend/src/application/use-cases/browser-service.mjs",
           "backend/application/use-cases/admin-service.mjs",
-          "supabase/migrations/202609230001_initial.sql"
+          "servicio remoto/migrations/202609230001_initial.sql"
         ],
         gap: "Autenticaci\xF3n, autorizaci\xF3n y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptaci\xF3n del backlog original."
       },
@@ -746,7 +627,7 @@
         evidence: [
           "frontend/src/application/use-cases/browser-service.mjs",
           "backend/application/use-cases/admin-service.mjs",
-          "supabase/migrations/202609230001_initial.sql"
+          "servicio remoto/migrations/202609230001_initial.sql"
         ],
         gap: "Autenticaci\xF3n, autorizaci\xF3n y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptaci\xF3n del backlog original."
       },
@@ -758,7 +639,7 @@
         evidence: [
           "frontend/src/application/use-cases/browser-service.mjs",
           "backend/application/use-cases/admin-service.mjs",
-          "supabase/migrations/202609230001_initial.sql"
+          "servicio remoto/migrations/202609230001_initial.sql"
         ],
         gap: "Autenticaci\xF3n, autorizaci\xF3n y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptaci\xF3n del backlog original."
       },
@@ -835,7 +716,7 @@
         page: 8,
         status: "Parcial",
         evidence: [
-          "supabase/migrations/202610260001_pmv1.sql",
+          "servicio remoto/migrations/202610260001_pmv1.sql",
           "tests/pmv1.test.mjs",
           "tests/pmv1_live.mjs"
         ],
@@ -865,7 +746,7 @@
         evidence: [
           "frontend/src/application/use-cases/browser-service.mjs",
           "backend/application/use-cases/admin-service.mjs",
-          "supabase/migrations/202609230001_initial.sql"
+          "servicio remoto/migrations/202609230001_initial.sql"
         ],
         gap: "Autenticaci\xF3n, autorizaci\xF3n y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptaci\xF3n del backlog original."
       },
@@ -877,7 +758,7 @@
         evidence: [
           "frontend/src/application/use-cases/browser-service.mjs",
           "backend/application/use-cases/admin-service.mjs",
-          "supabase/migrations/202609230001_initial.sql"
+          "servicio remoto/migrations/202609230001_initial.sql"
         ],
         gap: "Autenticaci\xF3n, autorizaci\xF3n y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptaci\xF3n del backlog original."
       },
@@ -889,7 +770,7 @@
         evidence: [
           "frontend/src/application/use-cases/browser-service.mjs",
           "backend/application/use-cases/admin-service.mjs",
-          "supabase/migrations/202609230001_initial.sql"
+          "servicio remoto/migrations/202609230001_initial.sql"
         ],
         gap: "Autenticaci\xF3n, autorizaci\xF3n y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptaci\xF3n del backlog original."
       },
@@ -970,7 +851,7 @@
         evidence: [
           "frontend/src/application/use-cases/browser-service.mjs",
           "backend/application/use-cases/admin-service.mjs",
-          "supabase/migrations/202609230001_initial.sql"
+          "servicio remoto/migrations/202609230001_initial.sql"
         ],
         gap: "Autenticaci\xF3n, autorizaci\xF3n y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptaci\xF3n del backlog original.",
         pmv: "PMV3",
@@ -987,7 +868,7 @@
         evidence: [
           "frontend/src/application/use-cases/browser-service.mjs",
           "backend/application/use-cases/admin-service.mjs",
-          "supabase/migrations/202609230001_initial.sql"
+          "servicio remoto/migrations/202609230001_initial.sql"
         ],
         gap: "Autenticaci\xF3n, autorizaci\xF3n y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptaci\xF3n del backlog original.",
         pmv: "PMV3",
@@ -1176,7 +1057,7 @@
         page: 9,
         status: "Parcial",
         evidence: [
-          "supabase/migrations/202610260001_pmv1.sql",
+          "servicio remoto/migrations/202610260001_pmv1.sql",
           "tests/pmv1.test.mjs",
           "tests/pmv1_live.mjs"
         ],
@@ -1579,19 +1460,16 @@
   window.SatipoSimulation = new SimulationService({ store: new BrowserStorage(window.localStorage), entropy: new BrowserEntropy() });
   var service;
   var ready = (async () => {
-    const config = await assets.config();
-    if (!["demo", "supabase"].includes(config.mode)) throw new Error("Modo de datos no v\xE1lido.");
-    const cloud = config.mode === "supabase";
-    if (cloud && (!config.supabaseUrl || !config.supabasePublishableKey)) throw new Error("Configuraci\xF3n de Supabase incompleta.");
-    const client = cloud ? window.createSupabaseClient(config.supabaseUrl, config.supabasePublishableKey) : null;
-    const identity = cloud ? new SupabaseIdentity(client, new URL("shared/account.html", base).href) : null;
+    await assets.config();
+    const cloud = false;
+    const identity = null;
     service = new BrowserService({
       cloud,
       identity,
       assets,
-      profiles: cloud ? new SupabaseProfiles(client) : null,
-      community: cloud ? new SupabaseCommunity(client) : null,
-      admin: new HttpAdmin({ url: config.apiUrl, publicKey: config.supabasePublishableKey, identity, request: window.fetch.bind(window) }),
+      profiles: null,
+      community: null,
+      admin: new HttpAdmin({ url: null, publicKey: null, identity, request: window.fetch.bind(window) }),
       session: new BrowserStorage(window.sessionStorage),
       preferences: new BrowserStorage(window.localStorage)
     });

@@ -62,7 +62,7 @@ const LoginModule = (() => {
     setRecovery(false);
     if (new URLSearchParams(location.search).get('access') === 'denied') message('Acceso denegado. Se requieren permisos de administrador.',true);
     $('#submit-btn').disabled = !B.cloud;
-    if (!B.cloud) message('Configura Supabase para habilitar el acceso administrativo.',true);
+    if (!B.cloud) message('Configura servicio remoto para habilitar el acceso administrativo.',true);
   }
   return {init};
 })();

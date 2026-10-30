@@ -1,14 +1,10 @@
 node_modules/
 dist/
-.firebase/
-firebase-debug.log
 .env
 .env.*
 !.env.example
 config/*.local.*
 config/public.json
-supabase/.temp/
-supabase/.branches/
 __pycache__/
 test-results/
 *.log

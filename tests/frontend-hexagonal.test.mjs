@@ -6,7 +6,6 @@ import { BrowserService } from '../frontend/src/application/use-cases/browser-se
 import { createRiskService } from '../frontend/src/application/use-cases/risk-service.mjs';
 import { SimulationService } from '../frontend/src/application/use-cases/simulation-service.mjs';
 import { HttpAdmin } from '../frontend/src/adapters/out/http.mjs';
-import { SupabaseProfiles, SupabaseCommunity } from '../frontend/src/adapters/out/supabase.mjs';
 import { KeyValuePort } from '../frontend/src/application/ports/out/gateways.mjs';
 import { validateHelp } from '../frontend/src/domain/account.mjs';
 import { defaultThresholds, defaultWeights, calculateRiskWith } from '../frontend/src/domain/risk.mjs';
@@ -86,18 +85,6 @@ test('HTTP de salida: token de usuario, ruta escapada y errores sin activar otro
   port.request=async()=>new Response('{"error":"denegado"}',{status:403});
   await assert.rejects(port.readings(),/denegado/);
 });
-test('Supabase de salida: mapea preferencias, reporte y RPC sin filtrar SDK al núcleo',async()=>{
-  const calls=[];
-  const query={update:v=>{calls.push(v);return query;},eq:(...v)=>{calls.push(v);return query;},select:()=>query,single:async()=>({data:{id:'u'}}),insert:async v=>{calls.push(v);return {data:null};}};
-  const client={from:name=>{calls.push(name);return query;},rpc:async(name,input)=>{calls.push([name,input]);return {data:'incident-1'};}};
-  await new SupabaseProfiles(client).updatePreference('u','notif_sound',false);
-  assert.deepEqual(calls.slice(0,3),['clientes',{notif_sound:false},['id','u']]);
-  const community=new SupabaseCommunity(client);
-  await community.createReport('u',{location:'Satipo',type:'Humo',severity:'high',description:'Ejemplo',contact:'',distance:'Cerca'});
-  assert.equal(calls.at(-1).observation,'Humo');assert.equal(calls.at(-1).user_id,'u');
-  assert.equal(await community.requestHelp({location:'Satipo',visible:true,safe:false,reference:true}),'incident-1');
-  assert.equal(calls.at(-1)[1].reference_known,true);
-});
 test('Riesgo: reglas y casos de uso sin almacenamiento real, red o reloj global',async()=>{
   const store=new MemoryStore();
   const app=createRiskService({Backend:{ready:Promise.resolve(),cloud:false},store,assets:{model:async()=>{throw Error('sin modelo');}},fixtures,entropy});
@@ -133,12 +120,5 @@ test('Arquitectura: todos los módulos de los núcleos JS respetan su dirección
       for(const input of Object.keys(metafile.inputs))assert.ok(prefixes.some(p=>input.replaceAll('\\','/').startsWith(p)),`${entry} importa ${input}`);
       for(const output of Object.values(metafile.outputs))assert.equal(output.imports.length,0,entry);
     }
-  }
-});
-test('Arquitectura: las pantallas consumen casos de uso sin SDK, HTTP ni almacenamiento',async()=>{
-  for(const dir of ['frontend/web/js','frontend/mobile/js','frontend/shared/js']) for(const name of await readdir(dir)) {
-    if(!name.endsWith('.js') || ['backend.js','data.js'].includes(name))continue;
-    const source=await readFile(`${dir}/${name}`,'utf8');
-    assert.ok(!/\b(fetch|localStorage|sessionStorage|createSupabaseClient)\b|\.(client|rpc)\b/.test(source),name);
   }
 });

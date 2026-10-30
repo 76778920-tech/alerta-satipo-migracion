@@ -56,7 +56,7 @@ const AppModule = (() => {
     const chip = $("#model-chip");
     if (!banner || !label || !dot) return;
     if (B.cloud) {
-      label.textContent = 'Supabase · sin telemetría de campo conectada';
+      label.textContent = 'servicio remoto · sin telemetría de campo conectada';
       if (chip) chip.textContent = 'Datos históricos';
       return;
     }
@@ -333,7 +333,7 @@ const AppModule = (() => {
         form.reset();
         try {await Data.refresh();} catch {showToast('Reporte guardado; no se pudo actualizar el historial. Recarga para consultar.','warning');}
         renderSavedReports();
-        showToast(B.cloud?'Reporte guardado en Supabase y enviado a revisión.':'Reporte guardado en la demostración local.','success');
+        showToast(B.cloud?'Reporte guardado en servicio remoto y enviado a revisión.':'Reporte guardado en la demostración local.','success');
         screenNavigate('profile');
       } catch(error) {showToast('No se pudo enviar el reporte. Tus datos siguen en el formulario.','error');}
       finally {button.disabled=false;}
@@ -435,7 +435,7 @@ const AppModule = (() => {
     setupHelpButton();
     setupLogout();
     screenNavigate("home");
-    setText('#data-mode',B.cloud?'Reportes conectados a Supabase · muestra histórica separada':'DEMO: sensores, enlace y alertas simulados; datos guardados solo en este navegador.');
+    setText('#data-mode',B.cloud?'Reportes conectados a servicio remoto · muestra histórica separada':'DEMO: sensores, enlace y alertas simulados; datos guardados solo en este navegador.');
     await window.SatipoDataset.init($('#dataset-explorer'));
     if(B.cloud) {updateClock();renderNetworkBanner();} else startLiveSimulation();
   };

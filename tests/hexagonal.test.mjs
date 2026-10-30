@@ -4,7 +4,6 @@ import { readFile, readdir } from 'node:fs/promises';
 import { AdminService } from '../backend/application/use-cases/admin-service.mjs';
 import { changeCommand } from '../backend/domain/operation.mjs';
 import { MemoryIdentity, MemoryRepository } from '../backend/adapters/out/memory.mjs';
-import { SupabaseIdentity, SupabaseRepository } from '../backend/adapters/out/supabase.mjs';
 import { createHandler } from '../backend/adapters/in/http.mjs';
 const setup=()=>new AdminService({identity:new MemoryIdentity(),repository:new MemoryRepository()});
 test('Dominio: estados válidos y reapertura; rechaza tipos y valores incorrectos',()=>{
@@ -49,22 +48,6 @@ test('Adaptador HTTP: códigos, CORS, token obligatorio, JSON y error seguro',as
   assert.equal((await handler(request('/maintenance/V-01','PATCH',JSON.stringify({expectedState:'Pendiente',state:'Completada'})))).status,409);
   app.repository.readings=()=>{throw Error('SECRET_INTERNAL');};
   const failed=await handler(request('/readings'));assert.equal(failed.status,500);assert.ok(!(await failed.text()).includes('SECRET_INTERNAL'));
-});
-test('Adaptador Supabase: mapea filas, filtra estado previo y propaga indisponibilidad',async()=>{
-  const calls=[];let result={data:[{node_id:'V-01',state:'Completada'}],error:null};
-  const query={update(v){calls.push(v);return this;},eq(k,v){calls.push([k,v]);return this;},select(){return Promise.resolve(result);}};
-  const repo=new SupabaseRepository({from(name){calls.push(name);return query;}});
-  const command=changeCommand('maintenance','V-01','Pendiente','Completada');
-  assert.equal((await repo.compareAndSet(command)).state,'Completada');
-  assert.deepEqual(calls,['demo_maintenance',{state:'Completada'},['node_id','V-01'],['state','Pendiente']]);
-  result={data:[],error:null};assert.equal(await repo.compareAndSet(command),null);
-  result={data:null,error:{code:'XX000',message:'secret'}};await assert.rejects(repo.compareAndSet(command),{code:'UNAVAILABLE'});
-});
-test('Adaptador identidad: token inválido y servicio caído no son autorización válida',async()=>{
-  const identity=new SupabaseIdentity({auth:{getUser:async()=>({error:{status:401}})}});
-  assert.equal(await identity.authenticate('invalid'),null);
-  identity.client.auth.getUser=async()=>({error:{status:503}});
-  await assert.rejects(identity.authenticate('token'),{code:'UNAVAILABLE'});
 });
 test('Arquitectura: dominio y aplicación no importan SDK, HTTP, navegador ni infraestructura',async()=>{
   for(const dir of ['domain','application'])for(const name of await readdir('backend/'+dir,{recursive:true})) {

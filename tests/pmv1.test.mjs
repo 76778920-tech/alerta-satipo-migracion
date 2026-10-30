@@ -22,34 +22,3 @@ test('PMV1: diez capturas sin red y reintento conserva cola hasta confirmación 
   await assert.rejects(app.synchronize(),/offline/);assert.ok(rows.every(r=>!r.synced));
   app.remote.savePmv1=async r=>({id:r.id});assert.equal(await app.synchronize(),10);assert.equal(await app.synchronize(),0);
 });
-test('PMV1 PostgreSQL: RLS, transacción, unicidad y persistencia de lectura/predicción/alerta',async()=>{
- const db=new PGlite();await db.exec(`create role anon;create role authenticated;create schema auth;create table auth.users(id uuid primary key);create schema private;
- create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
- create function private.is_admin() returns boolean language sql stable as $$select auth.uid()='33333333-3333-4333-8333-333333333333'::uuid$$;
- grant usage on schema public,auth,private to authenticated,anon;
- insert into auth.users values('33333333-3333-4333-8333-333333333333'),('44444444-4444-4444-8444-444444444444');`);
- await db.exec(await readFile('supabase/migrations/202610260001_pmv1.sql','utf8'));
- async function call(role,user,sql,params=[]){await db.exec('begin');try{await db.exec(`set local role ${role}`);await db.query("select set_config('request.jwt.claim.sub',$1,true)",[user]);const result=await db.query(sql,params);await db.exec('commit');return result;}catch(e){await db.exec('rollback');throw e;}}
- const admin='33333333-3333-4333-8333-333333333333',user='44444444-4444-4444-8444-444444444444',record=evaluatePmv1(example());
- const write=(r,id=admin)=>call('authenticated',id,'select public.pmv1_store($1::jsonb) as result',[JSON.stringify(r)]);
- await assert.rejects(write(record,user));await assert.rejects(call('anon','','select public.pmv1_store($1::jsonb)',[JSON.stringify(record)]));
- assert.equal((await write(record)).rows[0].result.duplicate,false);assert.equal((await write(record)).rows[0].result.duplicate,true);
- for(const table of ['NodoSensor','LecturaAmbiental','HistoricoPrediccion','EventoAlerta']){assert.equal((await db.query(`select * from public."${table}"`)).rows.length,1);assert.equal((await call('authenticated',user,`select * from public."${table}"`)).rows.length,0);}
- const changed=structuredClone(record);changed.reading.values.temperature_c=53;await assert.rejects(write(changed));
- const bad=structuredClone(record);bad.reading.id='55555555-5555-4555-8555-555555555555';bad.prediction.level='INVALID';await assert.rejects(write(bad));
- assert.equal((await db.query('select * from public."LecturaAmbiental"')).rows.length,1);
- const normal=example();normal.id='66666666-6666-4666-8666-666666666666';normal.values={temperature_c:25,humidity_pct:70,smoke_index:10,gas_index:12,dust_ugm3:15};await write(evaluatePmv1(normal));
- assert.equal((await db.query('select * from public."LecturaAmbiental"')).rows.length,2);assert.equal((await db.query('select * from public."EventoAlerta"')).rows.length,1);
- await db.exec(`create table public.clientes(id uuid primary key);insert into public.clientes values('${user}');`);
- await db.exec(await readFile('supabase/migrations/202610290001_resident_feed.sql','utf8'));
- const feed=await call('authenticated',user,'select public.resident_pmv1_feed(true) as data');
- assert.equal(feed.rows[0].data.length,1);
- assert.equal(feed.rows[0].data[0].HistoricoPrediccion.level,'Emergencia');
- assert.ok(!('created_by' in feed.rows[0].data[0]));
- assert.equal((await call('authenticated',user,'select public.resident_pmv1_feed(false) as data')).rows[0].data.length,2);
- await assert.rejects(call('anon','','select public.resident_pmv1_feed(true)'));
- await assert.rejects(call('authenticated',admin,'select public.resident_pmv1_feed(true)'));
- await assert.rejects(write(record,user));
- assert.equal((await call('authenticated',user,'select * from public."LecturaAmbiental"')).rows.length,0);
- await db.close();
-});

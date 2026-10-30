@@ -7,7 +7,7 @@ export function browserPresenter(base) {
     const box = document.createElement('main');
     box.style.cssText = 'padding:40px;max-width:650px;margin:auto;font-family:Arial';
     const title = document.createElement('h1'); title.textContent = 'No se pudo conectar';
-    const message = document.createElement('p'); message.textContent = 'Revisa la conexión y la configuración de Supabase. No se han sustituido los datos por una simulación.';
+    const message = document.createElement('p'); message.textContent = 'Revisa la conexión y la configuración de servicio remoto. No se han sustituido los datos por una simulación.';
     const retry = document.createElement('button'); retry.textContent = 'Reintentar'; retry.onclick = () => location.reload();
     const link = document.createElement('a'); link.href = new URL('shared/login.html',base); link.textContent = ' Volver al acceso';
     box.append(title,message,retry,link); document.body.replaceChildren(box);

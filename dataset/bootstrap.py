@@ -8,4 +8,4 @@ URL = 'https://raw.githubusercontent.com/HamzaMa96/Smoke-Detection-IOT/main/smok
 
 def compose(root):
     root = Path(root)
-    return PrepareDataset(HttpCsvSource(URL), DatasetFiles(root / 'data', root / 'supabase/seed.sql'))
+    return PrepareDataset(HttpCsvSource(URL), DatasetFiles(root / 'data', root / 'data/seed.sql'))

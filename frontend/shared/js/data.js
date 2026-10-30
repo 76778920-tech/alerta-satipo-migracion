@@ -1,4 +1,3 @@
-/* Generado por npm run build. Editar frontend/src/, no este archivo. */
 (() => {
   var __defProp = Object.defineProperty;
   var __export = (target, all) => {
@@ -253,7 +252,7 @@
       }
     };
     const saveReports = (reports) => {
-      if (Backend.cloud) throw new Error("Usa createReport para escribir en Supabase.");
+      if (Backend.cloud) throw new Error("Usa createReport para escribir en servicio remoto.");
       store.set(STORAGE.reports, JSON.stringify(reports.slice(0, 20)));
     };
     const readIncidents = () => {
@@ -267,7 +266,7 @@
       }
     };
     const saveIncidents = (incidents) => {
-      if (Backend.cloud) throw new Error("Usa updateIncident para escribir en Supabase.");
+      if (Backend.cloud) throw new Error("Usa updateIncident para escribir en servicio remoto.");
       store.set(STORAGE.incidents, JSON.stringify(incidents));
     };
     const applyValidatedModel = (validated) => {

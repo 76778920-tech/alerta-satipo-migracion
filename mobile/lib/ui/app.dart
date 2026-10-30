@@ -6,12 +6,12 @@ import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import '../application/mobile_service.dart';
 import '../adapters/ble_receiver.dart';
-import '../adapters/cloud_records.dart';
+import '../application/remote_records.dart';
 import '../domain/measurement.dart';
 
 class SatipoApp extends StatelessWidget {
   final MobileService service;
-  final CloudRecords? cloud;
+  final RemoteRecords? cloud;
   const SatipoApp({super.key, required this.service, this.cloud});
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -61,7 +61,7 @@ class SatipoApp extends StatelessWidget {
 
 class AppShell extends StatefulWidget {
   final MobileService service;
-  final CloudRecords? cloud;
+  final RemoteRecords? cloud;
   const AppShell({super.key, required this.service, this.cloud});
   @override
   State<AppShell> createState() => _AppShellState();
@@ -715,7 +715,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         child: Text(register ? 'Ya tengo cuenta' : 'Crear una cuenta'),
       ),
       notice(
-        'Cuentas locales: no son las del panel web. Todas las cuentas de esta app son de pobladores. No concede permisos en Supabase.',
+        'Cuentas locales: no son las del panel web. Todas las cuentas de esta app son de pobladores. No concede permisos en servicio remoto.',
       ),
       notice(
         'Prototipo experimental. Las lecturas simuladas se identifican; el modelo no está validado con incendios reales.',
@@ -745,7 +745,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         last == null
             ? 'Sin mediciones disponibles.'
             : cloudMode
-            ? 'Última lectura recibida de Supabase.'
+            ? 'Última lectura recibida de servicio remoto.'
             : 'Última lectura conservada en este teléfono.',
       ),
       ...cloudControls(),
@@ -923,7 +923,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         notice(
           cloudMode
               ? 'No hay alertas remotas disponibles para este filtro. Revisa el estado de la consulta.'
-              : 'No hay alertas locales para este filtro. Conecta Supabase para consultar las del servidor.',
+              : 'No hay alertas locales para este filtro. Conecta servicio remoto para consultar las del servidor.',
         ),
       ...list.take(200).map((r) => readingCard(r, alert: true)),
     ];
@@ -945,7 +945,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     return [
       heading(
         'Historial',
-        '${rows.length} lecturas completas · ${cloudMode ? 'Supabase (hasta 1000)' : 'SQLite local'}',
+        '${rows.length} lecturas completas · ${cloudMode ? 'servicio remoto (hasta 1000)' : 'SQLite local'}',
       ),
       ...cloudControls(),
       const SizedBox(height: 16),

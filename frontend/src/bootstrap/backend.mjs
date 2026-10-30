@@ -1,5 +1,4 @@
 import { BrowserService } from '../application/use-cases/browser-service.mjs';
-import { SupabaseIdentity, SupabaseProfiles, SupabaseCommunity } from '../adapters/out/supabase.mjs';
 import { HttpAdmin, HttpAssets } from '../adapters/out/http.mjs';
 import { BrowserStorage, BrowserEntropy } from '../adapters/out/browser.mjs';
 import { SimulationService } from '../application/use-cases/simulation-service.mjs';
@@ -20,16 +19,13 @@ const assets = new HttpAssets(base, window.fetch.bind(window));
 window.SatipoSimulation = new SimulationService({store:new BrowserStorage(window.localStorage),entropy:new BrowserEntropy()});
 let service;
 const ready = (async () => {
-  const config = await assets.config();
-  if (!['demo','supabase'].includes(config.mode)) throw new Error('Modo de datos no válido.');
-  const cloud = config.mode === 'supabase';
-  if (cloud && (!config.supabaseUrl || !config.supabasePublishableKey)) throw new Error('Configuración de Supabase incompleta.');
-  const client = cloud ? window.createSupabaseClient(config.supabaseUrl, config.supabasePublishableKey) : null;
-  const identity = cloud ? new SupabaseIdentity(client, new URL('shared/account.html',base).href) : null;
+  await assets.config();
+  const cloud = false;
+  const identity = null;
   service = new BrowserService({cloud, identity, assets,
-    profiles: cloud ? new SupabaseProfiles(client) : null,
-    community: cloud ? new SupabaseCommunity(client) : null,
-    admin: new HttpAdmin({url:config.apiUrl,publicKey:config.supabasePublishableKey,identity,request:window.fetch.bind(window)}),
+    profiles: null,
+    community: null,
+    admin: new HttpAdmin({url:null,publicKey:null,identity,request:window.fetch.bind(window)}),
     session:new BrowserStorage(window.sessionStorage), preferences:new BrowserStorage(window.localStorage)
   });
   if (identity) identity.subscribe(() => {service.signedOut(); presenter.signedOut();});

@@ -90,7 +90,7 @@
       "page": 8,
       "status": "Parcial",
       "evidence": [
-        "supabase/migrations/202610260001_pmv1.sql",
+        "servicio remoto/migrations/202610260001_pmv1.sql",
         "tests/pmv1.test.mjs",
         "tests/pmv1_live.mjs"
       ],
@@ -125,7 +125,7 @@
       "evidence": [
         "frontend/src/application/use-cases/browser-service.mjs",
         "backend/application/use-cases/admin-service.mjs",
-        "supabase/migrations/202609230001_initial.sql"
+        "servicio remoto/migrations/202609230001_initial.sql"
       ],
       "gap": "Autenticación, autorización y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptación del backlog original."
     },
@@ -137,7 +137,7 @@
       "evidence": [
         "frontend/src/application/use-cases/browser-service.mjs",
         "backend/application/use-cases/admin-service.mjs",
-        "supabase/migrations/202609230001_initial.sql"
+        "servicio remoto/migrations/202609230001_initial.sql"
       ],
       "gap": "Autenticación, autorización y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptación del backlog original."
     },
@@ -149,7 +149,7 @@
       "evidence": [
         "frontend/src/application/use-cases/browser-service.mjs",
         "backend/application/use-cases/admin-service.mjs",
-        "supabase/migrations/202609230001_initial.sql"
+        "servicio remoto/migrations/202609230001_initial.sql"
       ],
       "gap": "Autenticación, autorización y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptación del backlog original."
     },
@@ -226,7 +226,7 @@
       "page": 8,
       "status": "Parcial",
       "evidence": [
-        "supabase/migrations/202610260001_pmv1.sql",
+        "servicio remoto/migrations/202610260001_pmv1.sql",
         "tests/pmv1.test.mjs",
         "tests/pmv1_live.mjs"
       ],
@@ -256,7 +256,7 @@
       "evidence": [
         "frontend/src/application/use-cases/browser-service.mjs",
         "backend/application/use-cases/admin-service.mjs",
-        "supabase/migrations/202609230001_initial.sql"
+        "servicio remoto/migrations/202609230001_initial.sql"
       ],
       "gap": "Autenticación, autorización y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptación del backlog original."
     },
@@ -268,7 +268,7 @@
       "evidence": [
         "frontend/src/application/use-cases/browser-service.mjs",
         "backend/application/use-cases/admin-service.mjs",
-        "supabase/migrations/202609230001_initial.sql"
+        "servicio remoto/migrations/202609230001_initial.sql"
       ],
       "gap": "Autenticación, autorización y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptación del backlog original."
     },
@@ -280,7 +280,7 @@
       "evidence": [
         "frontend/src/application/use-cases/browser-service.mjs",
         "backend/application/use-cases/admin-service.mjs",
-        "supabase/migrations/202609230001_initial.sql"
+        "servicio remoto/migrations/202609230001_initial.sql"
       ],
       "gap": "Autenticación, autorización y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptación del backlog original."
     },
@@ -361,7 +361,7 @@
       "evidence": [
         "frontend/src/application/use-cases/browser-service.mjs",
         "backend/application/use-cases/admin-service.mjs",
-        "supabase/migrations/202609230001_initial.sql"
+        "servicio remoto/migrations/202609230001_initial.sql"
       ],
       "gap": "Autenticación, autorización y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptación del backlog original.",
       "pmv": "PMV3",
@@ -378,7 +378,7 @@
       "evidence": [
         "frontend/src/application/use-cases/browser-service.mjs",
         "backend/application/use-cases/admin-service.mjs",
-        "supabase/migrations/202609230001_initial.sql"
+        "servicio remoto/migrations/202609230001_initial.sql"
       ],
       "gap": "Autenticación, autorización y cierre implementados para el panel. Falta validar recorrido de usuarios finales Android y aceptación del backlog original.",
       "pmv": "PMV3",
@@ -567,7 +567,7 @@
       "page": 9,
       "status": "Parcial",
       "evidence": [
-        "supabase/migrations/202610260001_pmv1.sql",
+        "servicio remoto/migrations/202610260001_pmv1.sql",
         "tests/pmv1.test.mjs",
         "tests/pmv1_live.mjs"
       ],

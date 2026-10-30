@@ -14,7 +14,7 @@ window.SatipoDataset = (() => {
     const temps = readings.map(r=>r.temperature_c).filter(number);
     const average = temps.length ? temps.reduce((a,b)=>a+b,0)/temps.length : null;
     const invalid = readings.filter(r=>!number(r.source_row)||!number(r.temperature_c)||!number(r.humidity_pct)||r.humidity_pct<0||r.humidity_pct>100||!Number.isFinite(Date.parse(r.recorded_at))||typeof r.fire_alarm!=='boolean').length;
-    q('#dataset-summary').textContent = `${readings.length} registros · ${positive} con alarma · ${negative} sin alarma · fuente: ${window.SatipoBackend.cloud?'Supabase':'archivo local'}`;
+    q('#dataset-summary').textContent = `${readings.length} registros · ${positive} con alarma · ${negative} sin alarma · fuente: ${window.SatipoBackend.cloud?'servicio remoto':'archivo local'}`;
     q('#reading-kpis').innerHTML = [
       ['Lecturas disponibles',readings.length,'Muestra histórica importada'],
       ['Con alarma',positive,'Etiqueta original: Fire Alarm = 1'],

@@ -9,7 +9,7 @@ window.SatipoOperations = (() => {
     document.querySelector('[data-view="nodes"]').textContent='Nodos virtuales';
     for(const name of ['nodes','maintenance']) document.querySelector(`#view-${name}`).innerHTML=`<section class="ops-panel" id="demo-${name}"></section>`;
     document.querySelector('#view-incidents').insertAdjacentHTML('afterbegin','<section class="ops-panel" id="demo-cases"></section>');
-    for(const name of ['nodes','cases','maintenance']) document.querySelector(`#demo-${name}`).innerHTML=`<h2>${{nodes:'Nodos virtuales',cases:'Casos de revisión históricos',maintenance:'Mantenimiento demostrativo'}[name]}</h2><p class="reference-note">${note}</p><output class="operations-status" aria-live="polite">Consultando Supabase…</output><button type="button" class="secondary-button operations-retry">Actualizar</button><div class="operations-body"></div>`;
+    for(const name of ['nodes','cases','maintenance']) document.querySelector(`#demo-${name}`).innerHTML=`<h2>${{nodes:'Nodos virtuales',cases:'Casos de revisión históricos',maintenance:'Mantenimiento demostrativo'}[name]}</h2><p class="reference-note">${note}</p><output class="operations-status" aria-live="polite">Consultando servicio remoto…</output><button type="button" class="secondary-button operations-retry">Actualizar</button><div class="operations-body"></div>`;
     document.querySelectorAll('.operations-retry').forEach(b=>b.onclick=refresh);
     document.addEventListener('change',async e=>{
       const input=e.target.closest('[data-operation]');if(!input)return;
@@ -43,7 +43,7 @@ window.SatipoOperations = (() => {
     document.querySelectorAll('.operations-retry').forEach(b=>b.disabled=true);
     try{
       const {nodes,links,cases,maintenance}=await B.listOperations();
-      snapshot={nodes,links,cases,maintenance};render();status(`Datos y estados consultados ${new Date().toLocaleString('es-PE',{timeZone:'America/Lima'})} (Perú). Estados compartidos en Supabase; lecturas históricas, no telemetría actual.`);
+      snapshot={nodes,links,cases,maintenance};render();status(`Datos y estados consultados ${new Date().toLocaleString('es-PE',{timeZone:'America/Lima'})} (Perú). Estados compartidos en servicio remoto; lecturas históricas, no telemetría actual.`);
     }catch(error){status(`No se pudieron actualizar estas secciones. ${snapshot?'Se conserva la última consulta. ':''}Pulsa Actualizar para reintentar.`,true);}
     finally{document.querySelectorAll('.operations-retry').forEach(b=>b.disabled=false);}
   }

@@ -1,4 +1,4 @@
-/* Demostración local: nunca escribe en Supabase ni ejecuta el modelo. */
+/* Demostración local: nunca escribe en servicio remoto ni ejecuta el modelo. */
 window.SatipoDistrictDemo = (() => {
   let root, scenario=null, history=[];
   const simulation=window.SatipoSimulation;

@@ -100,7 +100,7 @@ export function createRiskService({Backend, store, assets, fixtures, entropy}) {
   };
 
   const saveReports = (reports) => {
-    if (Backend.cloud) throw new Error('Usa createReport para escribir en Supabase.');
+    if (Backend.cloud) throw new Error('Usa createReport para escribir en servicio remoto.');
     store.set(STORAGE.reports, JSON.stringify(reports.slice(0, 20)));
   };
 
@@ -116,7 +116,7 @@ export function createRiskService({Backend, store, assets, fixtures, entropy}) {
   };
 
   const saveIncidents = (incidents) => {
-    if (Backend.cloud) throw new Error('Usa updateIncident para escribir en Supabase.');
+    if (Backend.cloud) throw new Error('Usa updateIncident para escribir en servicio remoto.');
     store.set(STORAGE.incidents, JSON.stringify(incidents));
   };
 

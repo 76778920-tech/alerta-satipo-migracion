@@ -9,7 +9,6 @@
 - `metadata.json` conserva la URL y el SHA-256 del contenido fuente. El identificador `source_row` permite encontrar cada fila original.
 - `smoke_detection_300.csv`: importación manual en la tabla `smoke_readings` ya creada.
 - `smoke_detection_300.json`: importación automatizada y demostración local.
-- `supabase/seed.sql`: mismos datos, carga transaccional e idempotente.
 
 No se asignaron filas a pobladores ni a ubicaciones de Satipo: el dataset es una referencia común. Los datos privados de cada persona son sus reportes y preferencias.
 

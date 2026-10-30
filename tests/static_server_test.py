@@ -51,7 +51,7 @@ class PublicRoutesTest(unittest.TestCase):
 
     def test_private_paths_and_traversal_are_not_served(self):
         for route in ['/.', '/.env', '/config/admin.local.json', '/backend/bootstrap.mjs',
-                      '/frontend/web/index.html', '/src/bootstrap/backend.mjs', '/supabase/seed.sql', '/shared/js/',
+                      '/frontend/web/index.html', '/src/bootstrap/backend.mjs', '/data-private/seed.sql', '/shared/js/',
                       '/web/../../backend/bootstrap.mjs', '/web/%2e%2e/%2e%2e/.env',
                       '/docs/../backend/bootstrap.mjs', '/web/..%5c..%5c.env']:
             with self.subTest(route=route), self.assertRaises(HTTPError) as error:
