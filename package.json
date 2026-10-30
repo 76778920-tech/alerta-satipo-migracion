@@ -5,6 +5,7 @@
   "description": "Copia local preparada para migrar hosting y base de datos",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "build:hosting": "node scripts/build-hosting.mjs",
     "configure": "node --env-file-if-exists=.env scripts/configure.mjs",
     "dataset": "python scripts/prepare_dataset.py",
     "api-data": "python -m acquisition",
