@@ -1,11 +1,10 @@
 {
-  "name": "alerta-satipo",
+  "name": "alerta-satipo-migracion",
   "version": "0.2.0",
   "private": true,
-  "description": "Vigilancia comunitaria con Supabase Auth y PostgreSQL",
+  "description": "Copia local preparada para migrar hosting y base de datos",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "build:hosting": "npm run build && npm run configure && node scripts/prepare-hosting.mjs",
     "configure": "node --env-file-if-exists=.env scripts/configure.mjs",
     "dataset": "python scripts/prepare_dataset.py",
     "api-data": "python -m acquisition",

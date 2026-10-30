@@ -1,1 +1,6 @@
-{"supabaseUrl": "https://ddfmooylklgwnrmlxqzc.supabase.co", "supabasePublishableKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkZm1vb3lsa2xnd25ybWx4cXpjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxNzY0NTYsImV4cCI6MjEwNTc1MjQ1Nn0.oTzbDnRmLQOSuxcs2z6cmMwhaYni_LaAX6b7p54Bvc4", "apiUrl": "https://ddfmooylklgwnrmlxqzc.supabase.co/functions/v1/admin-api"}
+{
+  "mode": "demo",
+  "supabaseUrl": "",
+  "supabasePublishableKey": "",
+  "apiUrl": ""
+}

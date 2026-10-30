@@ -2,10 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'adapters/local_database.dart';
 import 'adapters/security.dart';
-import 'adapters/cloud_records.dart';
 import 'application/mobile_service.dart';
 import 'domain/measurement.dart';
 import 'ui/app.dart';
@@ -31,18 +29,8 @@ Future<SatipoApp> initialize() async {
   );
   // Require login on each cold launch; retain accounts and measurements.
   await app.logout();
-  final config = jsonDecode(
-    await rootBundle.loadString('assets/supabase-public.json'),
-  );
-  return SatipoApp(
-    service: app,
-    cloud: CloudRecords(
-      config['supabaseUrl'],
-      config['supabasePublishableKey'],
-      storageForOwner: (owner) =>
-          SecureSession(const FlutterSecureStorage(), 'satipo.cloud.$owner'),
-    ),
-  );
+  // Migration copy: local storage only, no remote client initialized.
+  return SatipoApp(service: app);
 }
 
 class Bootstrap extends StatelessWidget {
